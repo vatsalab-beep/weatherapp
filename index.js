@@ -14,9 +14,17 @@ const weather1 = new Weather (input,currTempUrl,forecastUrl,currTemp, forecast);
 
 searchBtn.addEventListener('click', () =>{
   
-weather1.displayCurrTempData();
-  weather1.displayForecastData();
+    weather1.displayCurrTempData().catch((err) =>{
+
+        currTemp.innerHTML = 
+        ` <h3> Please enter a valid city name</h3>`
+
+    });
+    weather1.displayForecastData();
+
+
 });
 
 
   
+
