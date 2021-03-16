@@ -11,27 +11,32 @@ class Weather {
     }
   
     async getCurrTempData (){
-      const response = await axios.get(this.currTempUrl, {
-        params:{
-          q: this.input.value,
-          units: 'imperial',
-          appid: 'fe4fa4212c8255438f8a4734f0df2757',
+     
+        const response = await axios.get(this.currTempUrl, {
+          params:{
+            q: this.input.value,
+            units: 'imperial',
+            appid: 'fe4fa4212c8255438f8a4734f0df2757',
+        
+          }
+        });
+        return response.data;
+
       
-        }
-      });
-      return response.data;
     }
     async displayCurrTempData (){
       const data = await this.getCurrTempData();
-      this.divWithTempData.innerHTML = ` 
-      <h3>  ${this.input.value}</h3>
-      <h3> ${data.main.temp} </h3>
+
+      this.divWithTempData.innerHTML = `
+      <h1 class = 'mainTemp'> ${data.main.temp} <span>&#8457;</span></h1> 
+      <h3 >  ${data.name} </h3>
       <h3> ${data.weather[0].description}</h3>
-      <h3> Humidity: ${data.main.humidity}% </h3>
-      <h3> Wind: ${data.wind.speed} mph </h3>
-      <h3> Feels Like: ${data.main.feels_like}</h3> `;
+      <h5> Humidity: ${data.main.humidity}% </h5>
+      <h5> Wind: ${data.wind.speed} mph </h5>
+      <h5> Feels Like: ${data.main.feels_like}</h5> `;
     }
     async getForecastData (){
+     
       const response = await axios.get(this.forecastUrl, {
         params:{
           q: this.input.value,
@@ -42,23 +47,24 @@ class Weather {
       });
     
       return response.data;
-
+    
     }
     async filterForecastData (){
 
       const data = await this.getForecastData();
+      console.log(data.list)
       let dates = [];
       let forecastData = [];
       for ( let item of data.list){
         const date = new Date (item.dt_txt).getDate();
           if ( dates.includes(date)){
-            console.log('ho');
           }
           else{
             dates.push(date);
             forecastData.push(item);
           }
       }
+      this.divwithForecastData.innerHTML = '';
       forecastData.shift();
      return forecastData;
     }
@@ -66,12 +72,12 @@ class Weather {
     async displayForecastData (){
      
       const forecastData = await this.filterForecastData();
-      
+
         for ( let item of forecastData)
         {
           const day = this.findDayofWeek(new Date(item.dt_txt).getDay());
           let iconCode = item.weather[0].icon;
-          forecast.innerHTML += 
+          this.divwithForecastData.innerHTML += 
           `
           <div class="day">
           <h3> ${day}</h3>
